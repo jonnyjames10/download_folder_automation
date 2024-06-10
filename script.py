@@ -33,7 +33,10 @@ class MoveHandler(FileSystemEventHandler):
         with scandir(source_dir) as entries:
             for e in entries: # GO THROUGH EACH FILE
                 name = e.name
-                #self.
+                self.move_music_file(e, name)
+                self.move_image_file(e, name)
+                self.move_video_file(e, name)
+                self.move_doc_file(e, name)
     
     def move_music_file(self, file, name):
         for e in music_file_extensions:
