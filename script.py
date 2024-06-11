@@ -1,16 +1,17 @@
 from os import scandir, rename
 from os.path import splitext, exists, join
 from shutil import move
-from time import sleep
+import time
 
 import logging
 
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer # type: ignore
+from watchdog.events import FileSystemEventHandler # type: ignore
 
-source_dir = ""
-dest_music_dir = ""
-dest_image_dir = ""
+# NEED TO MAKE SURE TO USE DOUBLE BACK SLASHES
+source_dir = "C:\\Users\\jonny\\Downloads\\test_move_folder"
+dest_music_dir = "C:\\Users\\jonny\\Music\\downloads_go_here"
+dest_image_dir = "C:\\Users\\jonny\\OneDrive\\Pictures\\downloads_go_here"
 dest_document_dir = ""
 dest_video_dir = ""
 
@@ -39,7 +40,7 @@ class MoveHandler(FileSystemEventHandler):
     
     def move_music_file(self, file, name):
         for e in music_file_extensions:
-            if file.endswith(e) or file.endswith(e.upper()):
+            if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_music_dir, file, name)
                 logging.info(f"Moved music file: {name}")
     
@@ -62,7 +63,19 @@ class MoveHandler(FileSystemEventHandler):
                 logging.info(f"Moved document file: {name}")
 
 if __name__ == "__main__":
+    # CODE FOUND AT "https://pypi.org/project/watchdog/"
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
+    path = source_dir
+    logging.info(f'start watching directory {path!r}')
     event_handler = MoveHandler()
+    observer = Observer()
+    observer.schedule(event_handler, path, recursive=True)
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    finally:
+        observer.stop()
+        observer.join()
