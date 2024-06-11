@@ -20,7 +20,7 @@ image_file_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif
 video_file_extensions = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpg', '.mpeg', '.3gp', '.3g2', '.ogv', '.rm', '.rmvb', '.vob', '.ts', '.m2ts', '.mxf', '.divx']
 document_file_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt']
 
-#TODO: Create constant function: if __name__ == "__main__":...
+#TODO: Create function to extract files from a ZIP folder
 
 def move_file(destination, file, name):
     filename, extension= splitext(name)
