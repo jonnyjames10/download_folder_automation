@@ -48,24 +48,24 @@ class MoveHandler(FileSystemEventHandler):
     
     def move_image_file(self, file, name):
         for e in image_file_extensions:
-            if file.endswith(e) or file.endswith(e.upper()):
+            if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_image_dir, file, name)
                 logging.info(f"Moved image file: {name}")
     
     def move_video_file(self, file, name):
         for e in video_file_extensions:
-            if file.endswith(e) or file.endswith(e.upper()):
+            if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_video_dir, file, name)
                 logging.info(f"Moved video file: {name}")
     
     def move_doc_file(self, file, name):
         for e in document_file_extensions:
-            if file.endswith(e) or file.endswith(e.upper()):
+            if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_document_dir, file, name)
                 logging.info(f"Moved document file: {name}")
     
     def unzip_folder(self, folder, name):
-        if folder.endswith(".zip") or folder.endswith(".ZIP"):
+        if name.endswith(".zip") or name.endswith(".ZIP"):
             path = source_dir + '\\' + folder
             unpack_archive(folder, source_dir)
             logging.info(f"Unzipped folder: {name}")
