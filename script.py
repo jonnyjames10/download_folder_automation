@@ -1,6 +1,7 @@
 from os import scandir, rename
 from os.path import splitext, exists, join
-from shutil import move
+from shutil import move, unpack_archive
+import zipfile
 import time
 
 import logging
@@ -31,12 +32,13 @@ def move_file(destination, file, name):
 class MoveHandler(FileSystemEventHandler):
     def on_modified(self, event):
         with scandir(source_dir) as entries:
-            for e in entries: # GO THROUGH EACH FILE
-                name = e.name
-                self.move_music_file(e, name)
-                self.move_image_file(e, name)
-                self.move_video_file(e, name)
-                self.move_doc_file(e, name)
+            for ent in entries: # GO THROUGH EACH FILE
+                name = ent.name
+                self.move_music_file(ent, name)
+                self.move_image_file(ent, name)
+                self.move_video_file(ent, name)
+                self.move_doc_file(ent, name)
+                self.unzip_fodler(ent, name)
     
     def move_music_file(self, file, name):
         for e in music_file_extensions:
@@ -61,6 +63,12 @@ class MoveHandler(FileSystemEventHandler):
             if file.endswith(e) or file.endswith(e.upper()):
                 move_file(dest_document_dir, file, name)
                 logging.info(f"Moved document file: {name}")
+    
+    def unzip_folder(self, folder, name):
+        if folder.endswith(".zip") or folder.endswith(".ZIP"):
+            path = source_dir + '\\' + folder
+            unpack_archive(folder, source_dir)
+            logging.info(f"Unzipped folder: {name}")
 
 if __name__ == "__main__":
     # CODE FOUND AT "https://pypi.org/project/watchdog/"
