@@ -23,6 +23,7 @@ video_file_extensions = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm'
 document_file_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt']
 
 #TODO: Create function to rename file if already exists in destination folder
+#TODO: Change destination folder names to better, neater titles
 
 def move_file(destination, file, name):
     filename, extension= splitext(name)
