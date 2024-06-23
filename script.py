@@ -10,19 +10,21 @@ from watchdog.observers import Observer # type: ignore
 from watchdog.events import FileSystemEventHandler # type: ignore
 
 # NEED TO MAKE SURE TO USE DOUBLE BACK SLASHES
-source_dir = "C:\\Users\\jonny\\Downloads\\test_move_folder"
+source_dir = "C:\\Users\\jonny\\Downloads"
 dest_music_dir = "C:\\Users\\jonny\\Music\\Music Downloads"
-dest_image_dir = "C:\\Users\\jonny\\OneDrive\\Pictures\\downloads_go_here"
-dest_document_dir = "C:\\Users\\jonny\\OneDrive\\Documents"
-dest_video_dir = "C:\\Users\\jonny\\Videos\\Downloaded videos"
+dest_image_dir = "C:\\Users\\jonny\\OneDrive\\Pictures\\Image Downloads"
+dest_document_dir = "C:\\Users\\jonny\\OneDrive\\Documents\\Document Downloads"
+dest_video_dir = "C:\\Users\\jonny\\Videos\\Video Downloads"
+dest_exe_dir = "C:\\Users\\jonny\\Downloads\\EXE Downloads"
 dest_zip_file = "C:\\Users\\jonny\\Downloads\\ZIP Files"
 
 music_file_extensions = ['.mp3', '.wav', '.aac', '.flac', '.ogg', '.wma', '.m4a', '.alac', '.aiff', '.aif', '.aifc', '.opus', '.mp2', '.mka', '.mid', '.midi', '.rmi']
 image_file_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.svg', '.ico', '.heic', '.heif', '.raw', '.cr2', '.nef', '.orf', '.sr2', '.psd', '.ai', '.eps']
 video_file_extensions = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpg', '.mpeg', '.3gp', '.3g2', '.ogv', '.rm', '.rmvb', '.vob', '.ts', '.m2ts', '.mxf', '.divx']
-document_file_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt']
+document_file_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv', '.pptm']
 
-#TODO: Change destination folder names to better, neater titles
+#TODO: Within document file, order by file type (PDF, spreadsheet, powerpoint, etc.)
+#TODO: Create desktop notification if an error occurs (File can't be moved, file is encrypted, etc.)
 
 def move_file(destination, file, name):
     if exists(f"{destination}/{name}"):
@@ -50,6 +52,7 @@ class MoveHandler(FileSystemEventHandler):
                 self.move_image_file(ent, name)
                 self.move_video_file(ent, name)
                 self.move_doc_file(ent, name)
+                self.move_exe_file(ent, name)
                 self.unzip_folder(ent, name)
     
     def move_music_file(self, file, name):
@@ -75,6 +78,11 @@ class MoveHandler(FileSystemEventHandler):
             if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_document_dir, file, name)
                 logging.info(f"Moved document file: {name}")
+    
+    def move_exe_file(self, file, name):
+        if name.endswith(".exe") or name.endswith(".EXE"):
+            move_file(dest_exe_dir, file, name)
+            logging.info(f"Moved document file: {name}")
     
     def unzip_folder(self, folder, name):
         if name.endswith(".zip") or name.endswith(".ZIP"):
