@@ -11,7 +11,7 @@ from watchdog.events import FileSystemEventHandler # type: ignore
 
 # NEED TO MAKE SURE TO USE DOUBLE BACK SLASHES
 source_dir = "C:\\Users\\jonny\\Downloads\\test_move_folder"
-dest_music_dir = "C:\\Users\\jonny\\Music\\downloads_go_here"
+dest_music_dir = "C:\\Users\\jonny\\Music\\Music Downloads"
 dest_image_dir = "C:\\Users\\jonny\\OneDrive\\Pictures\\downloads_go_here"
 dest_document_dir = "C:\\Users\\jonny\\OneDrive\\Documents"
 dest_video_dir = "C:\\Users\\jonny\\Videos\\Downloaded videos"
@@ -22,14 +22,24 @@ image_file_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif
 video_file_extensions = ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpg', '.mpeg', '.3gp', '.3g2', '.ogv', '.rm', '.rmvb', '.vob', '.ts', '.m2ts', '.mxf', '.divx']
 document_file_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt']
 
-#TODO: Create function to rename file if already exists in destination folder
 #TODO: Change destination folder names to better, neater titles
 
 def move_file(destination, file, name):
-    filename, extension= splitext(name)
-    # if exists(destination):
-    #    pass
+    if exists(f"{destination}/{name}"):
+        print('Name in destination already exists')
+        new_file_name = create_new_file_name(destination, name)
+        old_name = join(destination, name)
+        new_name = join(destination, new_file_name)
+        rename(old_name, new_name)
     move(file, destination)
+
+def create_new_file_name(destination, name):
+    filename, extension= splitext(name)
+    x = 0
+    while exists(f"{destination}/{name}"):
+        name = f"{filename} ({str(x)}){extension}" # E.g. "[name] (1).[ext]"
+        x += 1
+    return name
 
 class MoveHandler(FileSystemEventHandler):
     def on_modified(self, event):
