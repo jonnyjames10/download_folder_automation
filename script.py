@@ -48,7 +48,7 @@ def notify(file_type, name, path):
     notification.notify(
         title = f'{file_type} has been moved',
         message = f'File {name} has been moved to {path}.',
-        app_icon = None,
+        app_icon = "\folder.ico",
         timeout = 10
     )
 
