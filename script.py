@@ -1,6 +1,7 @@
 from os import scandir, rename
 from os.path import splitext, exists, join
 from shutil import move, unpack_archive
+from plyer import notification # type: ignore
 import zipfile
 import time
 
@@ -16,7 +17,7 @@ dest_image_dir = "C:\\Users\\jonny\\OneDrive\\Pictures\\Image Downloads"
 dest_document_dir = "C:\\Users\\jonny\\OneDrive\\Documents\\Document Downloads"
 dest_video_dir = "C:\\Users\\jonny\\Videos\\Video Downloads"
 dest_exe_dir = "C:\\Users\\jonny\\Downloads\\EXE Downloads"
-dest_zip_file = "C:\\Users\\jonny\\Downloads\\ZIP Files"
+dest_zip_dir = "C:\\Users\\jonny\\Downloads\\ZIP Files"
 
 music_file_extensions = ['.mp3', '.wav', '.aac', '.flac', '.ogg', '.wma', '.m4a', '.alac', '.aiff', '.aif', '.aifc', '.opus', '.mp2', '.mka', '.mid', '.midi', '.rmi']
 image_file_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.svg', '.ico', '.heic', '.heif', '.raw', '.cr2', '.nef', '.orf', '.sr2', '.psd', '.ai', '.eps']
@@ -43,6 +44,14 @@ def create_new_file_name(destination, name):
         x += 1
     return name
 
+def notify(file_type, name, path):
+    notification.notify(
+        title = f'{file_type} has been moved',
+        message = f'File {name} has been moved to {path}.',
+        app_icon = None,
+        timeout = 10
+    )
+
 class MoveHandler(FileSystemEventHandler):
     def on_modified(self, event):
         with scandir(source_dir) as entries:
@@ -59,36 +68,42 @@ class MoveHandler(FileSystemEventHandler):
         for e in music_file_extensions:
             if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_music_dir, file, name)
+                notify(e.upper(), name, dest_music_dir)
                 logging.info(f"Moved music file: {name}")
     
     def move_image_file(self, file, name):
         for e in image_file_extensions:
             if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_image_dir, file, name)
+                notify(e.upper(), name, dest_image_dir)
                 logging.info(f"Moved image file: {name}")
     
     def move_video_file(self, file, name):
         for e in video_file_extensions:
             if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_video_dir, file, name)
+                notify(e.upper(), name, dest_video_dir)
                 logging.info(f"Moved video file: {name}")
     
     def move_doc_file(self, file, name):
         for e in document_file_extensions:
             if name.endswith(e) or name.endswith(e.upper()):
                 move_file(dest_document_dir, file, name)
+                notify(e.upper(), name, dest_document_dir)
                 logging.info(f"Moved document file: {name}")
     
     def move_exe_file(self, file, name):
         if name.endswith(".exe") or name.endswith(".EXE"):
             move_file(dest_exe_dir, file, name)
+            notify('EXE', name, dest_exe_dir)
             logging.info(f"Moved document file: {name}")
     
     def unzip_folder(self, folder, name):
         if name.endswith(".zip") or name.endswith(".ZIP"):
             path = source_dir
             unpack_archive(folder, source_dir)
-            move_file(dest_zip_file, folder, name)
+            move_file(dest_zip_dir, folder, name)
+            notify('ZIP', name, dest_zip_dir)
             logging.info(f"Unzipped folder: {name}")
 
 if __name__ == "__main__":
